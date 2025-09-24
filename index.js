@@ -6,24 +6,27 @@ const prisma = new PrismaClient();
 
 app.use(express.json());
 
-// Criar usuário
 app.post('/user', async (req, res) => {
   const { name, email } = req.body;
   const user = await prisma.user.create({ data: { name, email } });
   res.json(user);
 });
 
-// Listar todos os usuários
+
 app.get('/users', async (req, res) => {
   const users = await prisma.user.findMany();
   res.json(users);
 });
 
-// Buscar um usuário pelo ID
+app.get('/health', async (req, res) => {
+  res.status(200).json({status: "ok", uptime: process.uptime()});
+});
+
+
 app.get('/users/:id', async (req, res) => {
   const { id } = req.params;
   const user = await prisma.user.findUnique({
-    where: { id: Number(id) }, // se o id for INT no schema
+    where: { id: Number(id) }, 
   });
 
   if (!user) {
